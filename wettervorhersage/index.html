@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wettervorhersage</title>
+</head>
+<body>
+    <h1>Wettervorhersage für deine Stadt</h1>
+    <form id="weatherForm">
+        <label for="city">Stadtname:</label>
+        <input type="text" id="city" name="city" required>
+        <button type="submit">Wetter abrufen</button>
+    </form>
+    <div id="weatherResult"></div>
+
+    <script>
+        document.getElementById('weatherForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const city = document.getElementById('city').value;
+
+            try {
+                const response = await fetch(`/weather?city=${city}`);
+                const data = await response.json();
+
+                if (data.error) {
+                    document.getElementById('weatherResult').innerText = data.error;
+                } else {
+                    document.getElementById('weatherResult').innerHTML = `
+                        <h2>Wettervorhersage für ${city}</h2>
+                        <p>Temperatur: ${data.temperature} °C</p>
+                        <p>Wetter: ${data.weather}</p>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('weatherResult').innerText = 'Fehler beim Abrufen der Wetterdaten.';
+            }
+        });
+    </script>
+</body>
+</html>
